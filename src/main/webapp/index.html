@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catering Management System - Dashboard</title>
+    <link rel="stylesheet" href="static/css/main.css">
+    <link rel="stylesheet" href="static/css/dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🍽️ Catering Management System</h1>
+                <nav class="nav-menu">
+                    <a href="index.html" class="nav-link active">Dashboard</a>
+                    <a href="orders.html" class="nav-link">Orders</a>
+                    <a href="employees.html" class="nav-link">Employees</a>
+                    <a href="resources.html" class="nav-link">Resources</a>
+                    <a href="tasks.html" class="nav-link">Tasks</a>
+                    <a href="clients.html" class="nav-link">Clients</a>
+                    <a href="reports.html" class="nav-link">Reports</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Summary Cards -->
+            <section class="dashboard-summary">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="card-icon">📋</div>
+                        <div class="card-content">
+                            <h3>Today's Orders</h3>
+                            <p class="card-number" id="todaysOrdersCount">0</p>
+                            <span class="card-label">Active orders for today</span>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="card-icon">⏳</div>
+                        <div class="card-content">
+                            <h3>Pending Orders</h3>
+                            <p class="card-number" id="pendingOrdersCount">0</p>
+                            <span class="card-label">Orders awaiting confirmation</span>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="card-icon">✅</div>
+                        <div class="card-content">
+                            <h3>Pending Tasks</h3>
+                            <p class="card-number" id="pendingTasksCount">0</p>
+                            <span class="card-label">Tasks to be completed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="card-icon">⚠️</div>
+                        <div class="card-content">
+                            <h3>Low Stock Items</h3>
+                            <p class="card-number" id="lowStockCount">0</p>
+                            <span class="card-label">Resources need restocking</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <h2>Quick Actions</h2>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="showNewOrderModal()">
+                        <span class="btn-icon">➕</span>
+                        New Order
+                    </button>
+                    <button class="action-btn" onclick="showNewTaskModal()">
+                        <span class="btn-icon">📝</span>
+                        Add Task
+                    </button>
+                    <button class="action-btn" onclick="showNewEmployeeModal()">
+                        <span class="btn-icon">👤</span>
+                        Add Employee
+                    </button>
+                    <button class="action-btn" onclick="showNewResourceModal()">
+                        <span class="btn-icon">📦</span>
+                        Add Resource
+                    </button>
+                </div>
+            </section>
+
+            <!-- Today's Overview -->
+            <section class="todays-overview">
+                <div class="overview-grid">
+                    <!-- Today's Orders -->
+                    <div class="overview-section">
+                        <h3>Today's Orders</h3>
+                        <div class="orders-list" id="todaysOrdersList">
+                            <div class="loading">Loading orders...</div>
+                        </div>
+                        <a href="orders.html" class="view-all-link">View All Orders →</a>
+                    </div>
+
+                    <!-- Today's Assignments -->
+                    <div class="overview-section">
+                        <h3>Staff Assignments</h3>
+                        <div class="assignments-list" id="todaysAssignmentsList">
+                            <div class="loading">Loading assignments...</div>
+                        </div>
+                        <a href="employees.html" class="view-all-link">View All Employees →</a>
+                    </div>
+
+                    <!-- Urgent Tasks -->
+                    <div class="overview-section">
+                        <h3>Urgent Tasks</h3>
+                        <div class="tasks-list" id="urgentTasksList">
+                            <div class="loading">Loading tasks...</div>
+                        </div>
+                        <a href="tasks.html" class="view-all-link">View All Tasks →</a>
+                    </div>
+
+                    <!-- Low Stock Resources -->
+                    <div class="overview-section">
+                        <h3>Low Stock Alert</h3>
+                        <div class="resources-list" id="lowStockResourcesList">
+                            <div class="loading">Loading resources...</div>
+                        </div>
+                        <a href="resources.html" class="view-all-link">View All Resources →</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 Catering Management System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="newOrderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('newOrderModal')">&times;</span>
+            <h2>Create New Order</h2>
+            <form id="newOrderForm">
+                <div class="form-group">
+                    <label for="customerSelect">Customer:</label>
+                    <select id="customerSelect" required>
+                        <option value="">Select Customer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="eventDate">Event Date:</label>
+                    <input type="date" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventVenue">Event Venue:</label>
+                    <input type="text" id="eventVenue" required>
+                </div>
+                <div class="form-group">
+                    <label for="orderType">Order Type:</label>
+                    <select id="orderType" required>
+                        <option value="">Select Type</option>
+                        <option value="FULL_CATERING">Full Catering</option>
+                        <option value="HALF_CATERING">Half Catering</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="guestCount">Guest Count:</label>
+                    <input type="number" id="guestCount" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="orderNotes">Notes:</label>
+                    <textarea id="orderNotes" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal('newOrderModal')">Cancel</button>
+                    <button type="submit">Create Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="newTaskModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('newTaskModal')">&times;</span>
+            <h2>Add New Task</h2>
+            <form id="newTaskForm">
+                <div class="form-group">
+                    <label for="taskTitle">Task Title:</label>
+                    <input type="text" id="taskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Description:</label>
+                    <textarea id="taskDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="taskDate">Task Date:</label>
+                    <input type="date" id="taskDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskPriority">Priority:</label>
+                    <select id="taskPriority" required>
+                        <option value="LOW">Low</option>
+                        <option value="MEDIUM" selected>Medium</option>
+                        <option value="HIGH">High</option>
+                        <option value="URGENT">Urgent</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal('newTaskModal')">Cancel</button>
+                    <button type="submit">Add Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="static/js/utils.js"></script>
+    <script src="static/js/dashboard.js"></script>
+</body>
+</html>
+
