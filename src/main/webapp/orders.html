@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management - Catering Management System</title>
+    <link rel="stylesheet" href="static/css/main.css">
+    <link rel="stylesheet" href="static/css/tables.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🍽️ Catering Management System</h1>
+                <nav class="nav-menu">
+                    <a href="index.html" class="nav-link">Dashboard</a>
+                    <a href="orders.html" class="nav-link active">Orders</a>
+                    <a href="employees.html" class="nav-link">Employees</a>
+                    <a href="resources.html" class="nav-link">Resources</a>
+                    <a href="tasks.html" class="nav-link">Tasks</a>
+                    <a href="clients.html" class="nav-link">Clients</a>
+                    <a href="reports.html" class="nav-link">Reports</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h2>Order Management</h2>
+                <button class="btn btn-primary" onclick="showNewOrderModal()">
+                    ➕ New Order
+                </button>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="search-filter-bar">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search orders by customer, venue, or order ID...">
+                <select id="statusFilter" class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="CONFIRMED">Confirmed</option>
+                    <option value="IN_PROGRESS">In Progress</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                </select>
+                <select id="typeFilter" class="filter-select">
+                    <option value="">All Types</option>
+                    <option value="FULL_CATERING">Full Catering</option>
+                    <option value="HALF_CATERING">Half Catering</option>
+                </select>
+                <input type="date" id="dateFilter" class="filter-select">
+                <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Orders List</h3>
+                    <div class="card-actions">
+                        <span id="ordersCount" class="text-muted">Loading...</span>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="table" id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Event Date</th>
+                                <th>Venue</th>
+                                <th>Type</th>
+                                <th>Guests</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Payment</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr>
+                                <td colspan="10" class="loading">Loading orders...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 Catering Management System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- New Order Modal -->
+    <div id="newOrderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('newOrderModal')">&times;</span>
+            <h2>Create New Order</h2>
+            <form id="newOrderForm">
+                <div class="form-group">
+                    <label for="customerSelect">Customer: *</label>
+                    <select id="customerSelect" required>
+                        <option value="">Select Customer</option>
+                    </select>
+                    <small><a href="#" onclick="showNewCustomerForm()">+ Add New Customer</a></small>
+                </div>
+                
+                <div id="newCustomerForm" style="display: none;">
+                    <div class="form-group">
+                        <label for="customerName">Customer Name: *</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerPhone">Phone Number:</label>
+                        <input type="tel" id="customerPhone">
+                    </div>
+                    <div class="form-group">
+                        <label for="customerEmail">Email:</label>
+                        <input type="email" id="customerEmail">
+                    </div>
+                    <div class="form-group">
+                        <label for="customerAddress">Address:</label>
+                        <textarea id="customerAddress" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerType">Customer Type:</label>
+                        <select id="customerType">
+                            <option value="DIRECT">Direct</option>
+                            <option value="REGULAR">Regular</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="eventDate">Event Date: *</label>
+                    <input type="date" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventVenue">Event Venue: *</label>
+                    <input type="text" id="eventVenue" required>
+                </div>
+                <div class="form-group">
+                    <label for="orderType">Order Type: *</label>
+                    <select id="orderType" required>
+                        <option value="">Select Type</option>
+                        <option value="FULL_CATERING">Full Catering</option>
+                        <option value="HALF_CATERING">Half Catering</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="guestCount">Guest Count:</label>
+                    <input type="number" id="guestCount" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="totalAmount">Total Amount:</label>
+                    <input type="number" id="totalAmount" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="advanceAmount">Advance Amount:</label>
+                    <input type="number" id="advanceAmount" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="orderNotes">Notes:</label>
+                    <textarea id="orderNotes" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal('newOrderModal')">Cancel</button>
+                    <button type="submit">Create Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Order Modal -->
+    <div id="editOrderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editOrderModal')">&times;</span>
+            <h2>Edit Order</h2>
+            <form id="editOrderForm">
+                <input type="hidden" id="editOrderId">
+                <div class="form-group">
+                    <label for="editEventDate">Event Date: *</label>
+                    <input type="date" id="editEventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="editEventVenue">Event Venue: *</label>
+                    <input type="text" id="editEventVenue" required>
+                </div>
+                <div class="form-group">
+                    <label for="editOrderType">Order Type: *</label>
+                    <select id="editOrderType" required>
+                        <option value="FULL_CATERING">Full Catering</option>
+                        <option value="HALF_CATERING">Half Catering</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editGuestCount">Guest Count:</label>
+                    <input type="number" id="editGuestCount" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="editTotalAmount">Total Amount:</label>
+                    <input type="number" id="editTotalAmount" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="editAdvanceAmount">Advance Amount:</label>
+                    <input type="number" id="editAdvanceAmount" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="editBalanceAmount">Balance Amount:</label>
+                    <input type="number" id="editBalanceAmount" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="editOrderStatus">Order Status:</label>
+                    <select id="editOrderStatus">
+                        <option value="PENDING">Pending</option>
+                        <option value="CONFIRMED">Confirmed</option>
+                        <option value="IN_PROGRESS">In Progress</option>
+                        <option value="COMPLETED">Completed</option>
+                        <option value="CANCELLED">Cancelled</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editPaymentStatus">Payment Status:</label>
+                    <select id="editPaymentStatus">
+                        <option value="ADVANCE">Advance</option>
+                        <option value="BALANCE">Balance</option>
+                        <option value="COMPLETE">Complete</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editOrderNotes">Notes:</label>
+                    <textarea id="editOrderNotes" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal('editOrderModal')">Cancel</button>
+                    <button type="submit">Update Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="static/js/utils.js"></script>
+    <script src="static/js/orders.js"></script>
+</body>
+</html>
+
